@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 🌸 Hilangkan autofill warna kuning Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    border: 1px solid #f9a8d4; /* pink-300 */
+    -webkit-text-fill-color: #1f2937; /* gray-800 */
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset; /* background putih */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 🌺 Gaya fokus pink */
+input:focus, 
+textarea:focus, 
+select:focus {
+    outline: none !important;
+    border-color: #ec4899; /* pink-500 */
+    box-shadow: 0 0 0 2px #fbcfe8; /* pink-200 glow */
+}
+
+/* 💐 Tombol save lebih lembut */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+@keyframes pop-badge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+.cart-badge {
+  animation: pop-badge 0.3s ease-out;
+}
