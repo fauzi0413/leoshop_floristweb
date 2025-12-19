@@ -1,5 +1,5 @@
 <x-layout title="Pembayaran Midtrans">
-  <div class="max-w-3xl mx-auto py-20 text-center">
+  <div class="max-w-3xl mx-auto py-20 text-center ">
     <h1 class="text-3xl font-bold mb-6">Proses Pembayaran</h1>
     <p>Total Pembayaran: <strong>Rp {{ number_format($total, 0, ',', '.') }}</strong></p>
 

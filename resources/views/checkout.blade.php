@@ -1,5 +1,5 @@
 <x-layout title="Checkout">
-  <section class="max-w-3xl mx-auto py-10">
+  <section class="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Checkout</h2>
 
     <form action="{{ route('order.process') }}" method="POST" class="space-y-6">

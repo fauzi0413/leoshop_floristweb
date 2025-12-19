@@ -18,64 +18,146 @@
 </head>
 <body class="font-sans text-gray-800">
 
-  <!-- Navbar -->
+  <!-- Navbar --> 
   <header class="bg-pink-100/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
-    <nav class="max-w-7xl mx-auto flex justify-between items-center px-5 py-2.5">
-      <a href="/" class="font-bold text-xl text-pink-700 flex items-center gap-1">🌸 <span>Leo Shop</span></a>
+    <nav
+      x-data="{ open: false }"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+    >
+      <!-- Top row -->
+      <div class="flex justify-between items-center py-3">
+        <a href="/" class="font-bold text-lg sm:text-xl text-pink-700 flex items-center gap-1">
+          🌸 <span>Leo Shop</span>
+        </a>
 
-      <div class="flex items-center gap-6 text-gray-700 text-sm font-medium">
-        <a href="/" class="hover:text-pink-700 transition">Beranda</a>
-        <a href="/shop" class="hover:text-pink-700 transition">Produk</a>
-        <a href="/#about" data-target="about" class="scroll-trigger hover:text-pink-700 transition">Tentang</a>
-        <a href="/#contact" data-target="contact" class="scroll-trigger hover:text-pink-700 transition">Kontak</a>
-        @guest
-          <div class="flex items-center gap-2">
-            <a href="/register" class="outline outline-1 outline-pink-600 text-pink-700 hover:bg-pink-600 hover:text-white px-3 py-1.5 rounded-md font-semibold text-sm transition duration-300">Daftar</a>
-            <a href="/login" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1.5 rounded-md font-semibold text-sm transition duration-300">Masuk</a>
-          </div>
-        @endguest
+        <!-- Desktop menu -->
+        <div class="hidden md:flex items-center gap-6 text-gray-700 text-sm font-medium">
+          <a href="/" class="hover:text-pink-700 transition">Beranda</a>
+          <a href="/shop" class="hover:text-pink-700 transition">Produk</a>
+          <a href="/#about" data-target="about" class="scroll-trigger hover:text-pink-700 transition">Tentang</a>
+          <a href="/#contact" data-target="contact" class="scroll-trigger hover:text-pink-700 transition">Kontak</a>
 
-        @auth
+          @guest
+            <div class="flex items-center gap-2">
+              <a href="/register"
+                class="outline outline-1 outline-pink-600 text-pink-700 hover:bg-pink-600 hover:text-white px-3 py-1.5 rounded-md font-semibold text-sm transition duration-300">
+                Daftar
+              </a>
+              <a href="/login"
+                class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1.5 rounded-md font-semibold text-sm transition duration-300">
+                Masuk
+              </a>
+            </div>
+          @endguest
 
-          <div class="relative">
-            <button data-profile-btn class="flex items-center gap-2 bg-pink-600 hover:bg-pink-800 border border-pink-200 text-white px-3 py-1.5 rounded-full shadow-sm transition duration-300">
-                <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}" 
-                    alt="Profile" 
-                    class="w-7 h-7 rounded-full object-cover border border-pink-300">
+          @auth
+            <div class="relative">
+              <button data-profile-btn
+                class="flex items-center gap-2 bg-pink-600 hover:bg-pink-800 border border-pink-200 text-white px-3 py-1.5 rounded-full shadow-sm transition duration-300">
+                <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                  alt="Profile"
+                  class="w-7 h-7 rounded-full object-cover border border-pink-300">
                 <span class="font-semibold text-sm">{{ Auth::user()->name }}</span>
                 <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
-            </button>
+              </button>
 
-            <div data-dropdown class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-              {{-- Jika user admin, tampilkan link dashboard --}}
-              @if (Auth::user()->role === 'admin')
+              <div data-dropdown class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                @if (Auth::user()->role === 'admin')
                   <a href="{{ route('admin.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50">
-                      <i class="fa-solid fa-gauge-high text-pink-600 w-4 text-center"></i>
-                      <span>Dashboard Admin</span>
+                    <i class="fa-solid fa-gauge-high text-pink-600 w-4 text-center"></i>
+                    <span>Dashboard Admin</span>
                   </a>
                   <hr class="border-gray-200 my-1">
-              @endif
+                @endif
 
-              {{-- Link ke Pengaturan --}}
-              <a href="/profile" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50">
+                <a href="/profile" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-pink-50">
                   <i class="fa-solid fa-gear text-pink-600 w-4 text-center"></i>
                   <span>Pengaturan</span>
-              </a>
+                </a>
 
-              {{-- Tombol Logout --}}
-              <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}">
                   @csrf
                   <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-pink-50">
-                      <i class="fa-solid fa-right-from-bracket text-pink-600 w-4 text-center"></i>
-                      <span>Logout</span>
+                    <i class="fa-solid fa-right-from-bracket text-pink-600 w-4 text-center"></i>
+                    <span>Logout</span>
                   </button>
+                </form>
+              </div>
+            </div>
+          @endauth
+        </div>
+
+        <!-- Mobile button -->
+        <button
+          type="button"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md hover:bg-pink-200/60 transition"
+          @click="open = !open"
+          aria-label="Toggle menu"
+        >
+          <i class="fa-solid" :class="open ? 'fa-xmark' : 'fa-bars'"></i>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div
+        x-cloak
+        x-show="open"
+        x-transition
+        class="md:hidden pb-4"
+        @click.outside="open = false"
+      >
+        <div class="bg-white/80 backdrop-blur rounded-xl border border-pink-100 shadow-sm p-3 space-y-1">
+          <a href="/" class="block px-3 py-2 rounded-lg hover:bg-pink-50 text-sm font-medium">Beranda</a>
+          <a href="/shop" class="block px-3 py-2 rounded-lg hover:bg-pink-50 text-sm font-medium">Produk</a>
+          <a href="/#about" data-target="about" class="scroll-trigger block px-3 py-2 rounded-lg hover:bg-pink-50 text-sm font-medium">Tentang</a>
+          <a href="/#contact" data-target="contact" class="scroll-trigger block px-3 py-2 rounded-lg hover:bg-pink-50 text-sm font-medium">Kontak</a>
+
+          @guest
+            <div class="pt-2 grid grid-cols-1 gap-2">
+              <a href="/register"
+                class="text-center outline outline-1 outline-pink-600 text-pink-700 hover:bg-pink-600 hover:text-white px-3 py-2 rounded-lg font-semibold text-sm transition duration-300">
+                Daftar
+              </a>
+              <a href="/login"
+                class="text-center bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-lg font-semibold text-sm transition duration-300">
+                Masuk
+              </a>
+            </div>
+          @endguest
+
+          @auth
+            <div class="pt-2 border-t border-pink-100 mt-2">
+              <div class="flex items-center gap-2 px-3 py-2">
+                <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                  alt="Profile"
+                  class="w-8 h-8 rounded-full object-cover border border-pink-200">
+                <div class="text-sm">
+                  <div class="font-semibold text-gray-800">{{ Auth::user()->name }}</div>
+                </div>
+              </div>
+
+              @if (Auth::user()->role === 'admin')
+                <a href="{{ route('admin.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 text-sm">
+                  <i class="fa-solid fa-gauge-high text-pink-600 w-4 text-center"></i>
+                  <span>Dashboard Admin</span>
+                </a>
+              @endif
+
+              <a href="/profile" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 text-sm">
+                <i class="fa-solid fa-gear text-pink-600 w-4 text-center"></i>
+                <span>Pengaturan</span>
+              </a>
+
+              <form method="POST" action="{{ route('logout') }}" class="px-1">
+                @csrf
+                <button type="submit" class="flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg hover:bg-pink-50 text-sm">
+                  <i class="fa-solid fa-right-from-bracket text-pink-600 w-4 text-center"></i>
+                  <span>Logout</span>
+                </button>
               </form>
             </div>
-
-          </div>
-
-        @endauth
-
+          @endauth
+        </div>
       </div>
     </nav>
   </header>
