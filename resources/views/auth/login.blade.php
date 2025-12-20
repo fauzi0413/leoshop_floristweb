@@ -72,7 +72,7 @@
                 :value="old('email')"
                 required autofocus autocomplete="off"
                 class="block mt-2 w-full !bg-white border border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 rounded-xl placeholder-gray-400 text-gray-800"
-                placeholder="contoh: admin@florist.com"
+                placeholder="contoh: florist@gmail.com"
               />
               <x-input-error :messages="$errors->get('email')" class="mt-2 text-pink-600" />
             </div>
