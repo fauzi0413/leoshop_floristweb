@@ -44,3 +44,28 @@ button:hover {
 .cart-badge {
   animation: pop-badge 0.3s ease-out;
 }
+
+/* Toast SweetAlert2 versi mini */
+.swal-toast-mini{
+  padding: 8px 10px !important;
+  min-width: 260px !important;   /* kecilin lebar */
+  max-width: 320px !important;
+}
+
+.swal-toast-mini-title{
+  font-size: 13px !important;
+  margin: 0 !important;
+}
+
+.swal-toast-mini-text{
+  font-size: 12px !important;
+  margin-top: 2px !important;
+}
+
+.swal-toast-mini-close{
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 18px !important;
+  line-height: 18px !important;
+}
+

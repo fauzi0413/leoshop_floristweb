@@ -1,4 +1,56 @@
 <x-layout title="Beranda">
+  
+  @auth
+    @php
+      $isAdmin = (auth()->user()->role ?? null) === 'admin';
+      $userPending = (int) ($userPendingCount ?? 0);
+      $adminPending = (int) ($adminPendingConfirmCount ?? 0);
+    @endphp
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const isAdmin = @json($isAdmin);
+        const userPending = @json($userPending);
+        const adminPending = @json($adminPending);
+
+        // ADMIN: ada pending confirmation
+        if (isAdmin && adminPending > 0) {
+          iziToast.show({
+            title: `Ada ${adminPending} pesanan baru`,
+            message: 'Status: pending confirmation',
+            position: 'topRight',
+            timeout: false,       // stay sampai di-close
+            close: true,          // ada tombol X
+            drag: false,
+            maxWidth: 320,        // biar tidak besar
+            buttons: [
+              ['<button style="margin-left:8px;">Cek Pesanan</button>', (instance, toast) => {
+                window.location.href = '/admin/orders';
+              }]
+            ]
+          });
+        }
+
+        // USER: ada pending payment
+        if (!isAdmin && userPending > 0) {
+          iziToast.show({
+            title: `Kamu punya ${userPending} pesanan pending`,
+            message: 'Selesaikan pembayarannya ya.',
+            position: 'topRight',
+            timeout: false,
+            close: true,
+            drag: false,
+            maxWidth: 320,
+            buttons: [
+              ['<button style="margin-left:8px;">Bayar Sekarang</button>', (instance, toast) => {
+                window.location.href = '/orders';
+              }]
+            ]
+          });
+        }
+      });
+    </script>
+  @endauth
 
   {{-- 🌸 Hero Section (Responsive) --}}
   <section
@@ -168,11 +220,11 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3 pt-2">
-            <a href="https://www.instagram.com/leosh0p"
+            <a href="https://www.instagram.com/leoshop.purwokerto"
               target="_blank"
               class="inline-flex items-center justify-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 rounded-lg font-medium shadow-md hover:shadow-lg transition duration-200">
               <i class="fa-brands fa-instagram text-xl"></i>
-              <span>@leosh0p</span>
+              <span>@leoshop.purwokerto</span>
             </a>
 
             <a href="https://wa.me/6285705865801"
