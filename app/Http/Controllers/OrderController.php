@@ -113,24 +113,45 @@ class OrderController extends Controller
         $validated = $request->validate([
             'status' => 'required|string',
             'shipping_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'reject_reason' => 'nullable|string|max:255',
         ]);
 
         $status = $validated['status'];
 
-        // 🔹 Jika admin mengunggah bukti pengiriman
+        // ✅ Admin menolak pesanan
+        if ($status === 'rejected') {
+            // Contoh pembatasan: tidak boleh tolak kalau sudah dikirim/selesai
+            if (in_array($order->status, ['shipped', 'completed'])) {
+                return back()->with('error', 'Pesanan yang sudah dikirim/selesai tidak bisa ditolak.');
+            }
+
+            $request->validate([
+                'reject_reason' => 'required|string|max:255',
+            ]);
+
+            $order->status = 'rejected';
+            $order->reject_reason = $request->reject_reason;
+            $order->rejected_at = now();
+            // opsional:
+            // $order->rejected_by = Auth::id();
+
+            $order->save();
+
+            return back()->with('success', 'Pesanan berhasil ditolak.');
+        }
+
+        // (kode kamu yang lama tetap)
         if ($request->hasFile('shipping_proof')) {
             $path = $request->file('shipping_proof')->store('shipping_proofs', 'public');
             $order->shipping_proof = $path;
-            $status = 'shipped'; // otomatis ubah status ke dikirim
-            $order->shipped_at = now(); // simpan waktu pengiriman
+            $status = 'shipped';
+            $order->shipped_at = now();
         }
 
-        // 🔹 Jika status diterima oleh pembeli
         if ($status === 'completed') {
-            $order->received_at = now(); // waktu diterima, untuk batas retur 3 hari
+            $order->received_at = now();
         }
 
-        // 🔹 Jika status pengembalian barang (retur)
         if ($status === 'returned') {
             $order->return_requested_at = now();
         }
@@ -140,7 +161,6 @@ class OrderController extends Controller
 
         return back()->with('success', 'Status pesanan berhasil diperbarui menjadi: ' . ucfirst(str_replace('_', ' ', $status)) . '.');
     }
-
     public function uploadProof(Request $request, $id)
     {
         $order = Order::where('id', $id)->where('user_id', auth()->id())->firstOrFail();

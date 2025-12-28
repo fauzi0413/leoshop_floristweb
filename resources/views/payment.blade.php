@@ -35,6 +35,7 @@
               'completed' => 'bg-emerald-100 text-emerald-800 border-emerald-300',
               'returned' => 'bg-rose-100 text-rose-800 border-rose-300',
               'cancelled' => 'bg-red-100 text-red-800 border-red-300',
+              'rejected' => 'bg-red-100 text-red-800 border-red-200',
               'failed' => 'bg-red-100 text-red-800 border-red-300',
               'default' => 'bg-gray-100 text-gray-800 border-gray-300',
             ];
@@ -47,8 +48,13 @@
             {{ ucfirst(str_replace('_', ' ', $statusValue)) }}
           </span>
         </li>
+        
         @if ($order->status === 'cancelled')
-          <li> <strong>Alasan Anda:</strong> {{ $order->cancel_reason ? $order->cancel_reason : '-'}} </li>
+          <li><strong>Alasan Pembatalan Anda:</strong> {{ $order->cancel_reason ?: '-' }}</li>
+        @endif
+
+        @if ($order->status === 'rejected')
+          <li><strong>Alasan Penolakan Pesanan:</strong> {{ $order->reject_reason ?: '-' }}</li>
         @endif
 
       </ul>
@@ -68,9 +74,11 @@
         Total: Rp {{ number_format($order->total_price, 0, ',', '.') }}
       </p>
     </div>
+
+    @if ($order->status === 'pending' || $order->status === 'pending_confirmation' || $order->status === 'cancelled'  || $order->status === 'rejected')
     
-    @if ($order->status === 'pending' || $order->status === 'pending_confirmation')
-      <div class="bg-gray-50 border rounded-lg p-5 mt-8">
+    <div class="bg-gray-50 border rounded-lg p-5 mt-8">
+        @if ($order->status === 'pending')
           <h4 class="font-semibold text-lg mb-3 text-gray-800">Metode Pembayaran</h4>
           <p class="text-gray-700 mb-4">
               Silakan lakukan transfer ke rekening berikut untuk menyelesaikan pembayaran Anda:
@@ -123,6 +131,7 @@
                   {{ $order->payment_proof ? 'Ganti Bukti Pembayaran' : 'Upload Bukti Pembayaran' }}
                   </button>
 
+        @endif
                   @if($order->payment_proof)
                   <h5 class="font-semibold text-gray-800 mb-3">Bukti Pembayaran</h5>
                     <div class="mt-6 bg-white border rounded-lg p-5 shadow-sm flex flex-col items-center justify-center text-center">

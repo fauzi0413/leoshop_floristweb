@@ -37,6 +37,7 @@
               'completed' => 'bg-emerald-100 text-emerald-800 border-emerald-300',
               'returned' => 'bg-rose-100 text-rose-800 border-rose-300',
               'cancelled' => 'bg-red-100 text-red-800 border-red-300',
+              'rejected' => 'bg-red-100 text-red-800 border-red-200',
               'failed' => 'bg-red-100 text-red-800 border-red-300',
               'default' => 'bg-gray-100 text-gray-800 border-gray-300',
             ];
@@ -50,8 +51,13 @@
           </span>
         </li>
         @if ($order->status === 'cancelled')
-          <li> <strong>Alasan Pembeli:</strong> {{ $order->cancel_reason ? $order->cancel_reason : '-'}} </li>
+          <li><strong>Alasan Pembatalan Pembeli:</strong> {{ $order->cancel_reason ?: '-' }}</li>
         @endif
+
+        @if ($order->status === 'rejected')
+          <li><strong>Alasan Penolakan Pesanan:</strong> {{ $order->reject_reason ?: '-' }}</li>
+        @endif
+
         @if ($order->status === 'completed' && $order->received_at)
           <li>
             <strong>Waktu Pesanan Diterima:</strong>
@@ -111,13 +117,26 @@
 
     <!-- Konfirmasi Pembayaran -->
     @if ($order->status === 'pending_confirmation')
-      <form action="{{ route('admin.orders.update', $order) }}" method="POST" class="text-center mt-6">
-        @csrf @method('PUT')
-        <input type="hidden" name="status" value="processing">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">
-          <i class="fa-solid fa-check mr-1"></i> Konfirmasi Pembayaran
-        </button>
-      </form>
+      <div class="text-center mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+          @csrf @method('PUT')
+          <input type="hidden" name="status" value="processing">
+          <button type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">
+            <i class="fa-solid fa-check mr-1"></i> Konfirmasi Pembayaran
+          </button>
+        </form>
+
+        <form id="rejectForm" action="{{ route('admin.orders.update', $order) }}" method="POST">
+          @csrf @method('PUT')
+          <input type="hidden" name="status" value="rejected">
+          <input type="hidden" name="reject_reason" id="rejectReasonInput">
+          <button type="button" id="btnReject"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition">
+            <i class="fa-solid fa-ban mr-1"></i> Tolak Pesanan
+          </button>
+        </form>
+      </div>
     @endif
 
     <!-- Kirim Barang -->
@@ -180,4 +199,36 @@
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btnReject');
+      if (!btn) return;
+
+      btn.addEventListener('click', async () => {
+        const { value: reason } = await Swal.fire({
+          title: 'Tolak Pesanan',
+          input: 'textarea',
+          inputLabel: 'Alasan penolakan admin (wajib)',
+          inputPlaceholder: 'Contoh: Stok habis / bukti pembayaran tidak valid / alamat tidak lengkap ...',
+          inputAttributes: { maxlength: 255 },
+          showCancelButton: true,
+          confirmButtonText: 'Tolak',
+          cancelButtonText: 'Batal',
+          confirmButtonColor: '#dc2626',
+          inputValidator: (value) => {
+            if (!value || !value.trim()) return 'Alasan wajib diisi.';
+            return null;
+          }
+        });
+
+        if (reason) {
+          document.getElementById('rejectReasonInput').value = reason.trim();
+          document.getElementById('rejectForm').submit();
+        }
+      });
+    });
+  </script>
+
 </x-layout-admin>
