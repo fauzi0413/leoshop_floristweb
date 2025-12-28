@@ -81,12 +81,24 @@
               </td>
               <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $order->created_at->format('d M Y') }}</td>
               <td class="px-4 py-3 text-center">
-                <a href="{{ route('admin.orders.show', $order) }}"
-                   class="inline-flex items-center justify-center gap-2 rounded-full border border-blue-200 px-3 py-1.5
-                          font-semibold text-blue-600 hover:bg-blue-50 hover:text-blue-800 transition">
-                  <i class="fa-solid fa-eye"></i>
-                  Detail
-                </a>
+                <div class="inline-flex items-center justify-center gap-2">
+                    <a href="{{ route('admin.orders.show', $order) }}"
+                      class="inline-flex items-center justify-center gap-2 rounded-full border border-blue-200 px-3 py-1.5
+                              font-semibold text-blue-600 hover:bg-blue-50 hover:text-blue-800 transition">
+                      <i class="fa-solid fa-eye"></i>
+                      Detail
+                    </a>
+                    <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="js-delete-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="button"
+                        class="js-delete-order inline-flex items-center justify-center gap-2 rounded-full border border-red-200 px-3 py-1.5
+                        font-semibold text-red-600 hover:bg-red-50 hover:text-red-800 transition">
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                      </button>
+                  </form>
+                </div>
               </td>
             </tr>
           @empty
@@ -114,6 +126,28 @@
   <!-- Font Awesome & SweetAlert -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.js-delete-order').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const form = btn.closest('form');
+
+          Swal.fire({
+            icon: 'warning',
+            title: 'Hapus pesanan ini?',
+            text: 'Riwayat pesanan yang sudah dihapus tidak bisa dikembalikan.',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#dc2626'
+          }).then((result) => {
+            if (result.isConfirmed) form.submit();
+          });
+        });
+      });
+    });
+  </script>
 
   @if(session('success'))
     <script>

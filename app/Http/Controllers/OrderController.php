@@ -237,4 +237,13 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
     
+    public function destroy(Order $order)
+    {
+        $order->delete();
+
+        return redirect()
+            ->route('admin.orders.index')
+            ->with('success', 'Pesanan berhasil dihapus.');
+    }
+
 }
