@@ -170,7 +170,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
         <div class="order-1 md:order-none">
           <img
-            src="{{ url('assets/logo leo shop.jpeg') }}"
+            src="{{ url('assets/logo-leoshop-new.jpeg') }}"
             alt="Leo Shop"
             class="rounded-2xl w-full max-w-xs sm:max-w-sm mx-auto shadow-lg object-cover"
             loading="lazy"
